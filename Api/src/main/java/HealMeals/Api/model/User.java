@@ -2,15 +2,12 @@ package HealMeals.Api.model;
 
 import jakarta.persistence.*;
 import jakarta.validation.constraints.Email;
-import jakarta.validation.constraints.NotBlank;
 import lombok.*;
-import org.hibernate.annotations.GenericGenerator;
-
-import java.time.Instant;
+import java.time.LocalDate;
 import java.util.UUID;
 
 @Entity
-@Table(name = "users", uniqueConstraints = {@UniqueConstraint(columnNames = "email")})
+@Table(name = "users")
 @Getter
 @Setter
 @NoArgsConstructor
@@ -19,24 +16,12 @@ import java.util.UUID;
 public class User {
 
     @Id
-    @GeneratedValue(generator = "UUID")
-    @GenericGenerator(name = "UUID", strategy = "org.hibernate.id.UUIDGenerator")
-    @Column(updatable = false, nullable = false, columnDefinition = "uuid")
-    private UUID id;
+    @GeneratedValue(strategy = GenerationType.UUID)
+    @Column(name = "user_id", updatable = false, nullable = false, columnDefinition = "BINARY(16)")
+    private UUID userId;
 
-    @NotBlank
+    @Column(nullable = false)
     private String name;
-
-    private String gender;
-    private String dob; 
-    private String address;
-    private String city;
-    private String state;
-
-    @Column(name = "health_id")
-    private String healthId;
-
-    private String phone;
 
     @Email
     @Column(nullable = false, unique = true)
@@ -45,23 +30,13 @@ public class User {
     @Column(nullable = false)
     private String password;
 
-    @Column(nullable = false)
-    private String role = "USER"; 
+    private String role;
+    private String gender;
+    private LocalDate dob;
+    private String address;
+    private String phone;
 
-    private Instant createdAt;
-    private Instant updatedAt;
-
-    @OneToOne(mappedBy = "user", cascade = CascadeType.ALL, orphanRemoval = true, fetch = FetchType.LAZY)
-    private UserProfile userProfile;
-
-    @PrePersist
-    public void prePersist() {
-        createdAt = Instant.now();
-        updatedAt = createdAt;
-    }
-
-    @PreUpdate
-    public void preUpdate() {
-        updatedAt = Instant.now();
-    }
+    // Relations
+    @OneToMany(mappedBy = "user", cascade = CascadeType.ALL, orphanRemoval = true)
+    private java.util.List<UserCondition> conditions;
 }
