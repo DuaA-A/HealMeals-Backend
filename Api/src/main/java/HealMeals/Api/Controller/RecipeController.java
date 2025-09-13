@@ -1,6 +1,7 @@
 package HealMeals.Api.Controller;
 
 import HealMeals.Api.DTO.RecipeDTO;
+import HealMeals.Api.DTO.RecipeSummaryDto;
 import HealMeals.Api.model.Recipe;
 import lombok.RequiredArgsConstructor;
 import HealMeals.Api.service.RecipeService;
@@ -24,8 +25,8 @@ public class RecipeController {
     }
 
     @GetMapping
-    public ResponseEntity<List<RecipeDTO>> getALLRecipes(){
-        List<RecipeDTO> recipeDTOS = recipeService.getAllRecipes();
+    public ResponseEntity<List<RecipeSummaryDto>> getALLRecipes(){
+        List<RecipeSummaryDto> recipeDTOS = recipeService.getAllRecipes();
         return ResponseEntity.ok(recipeDTOS);
     }
 

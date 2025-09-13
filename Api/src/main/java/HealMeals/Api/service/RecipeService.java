@@ -1,6 +1,7 @@
 package HealMeals.Api.service;
 
 import HealMeals.Api.DTO.RecipeDTO;
+import HealMeals.Api.DTO.RecipeSummaryDto;
 import HealMeals.Api.Mapper.RecipeMapper;
 import HealMeals.Api.model.Ingredient;
 import HealMeals.Api.model.Recipe;
@@ -54,11 +55,11 @@ public class RecipeService {
         return RecipeMapper.toDTO(saved);
     }
 
-    public List<RecipeDTO> getAllRecipes(){
+    public List<RecipeSummaryDto> getAllRecipes(){
         List<Recipe> recipes = recipeRepository.findAll();
 
         return recipes.stream()
-                .map(RecipeMapper::toDTO)
+                .map(RecipeMapper::toSummaryDto)
                 .collect(Collectors.toList());
     }
 

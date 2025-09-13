@@ -1,6 +1,7 @@
 package HealMeals.Api.Mapper;
 
 import HealMeals.Api.DTO.RecipeDTO;
+import HealMeals.Api.DTO.RecipeSummaryDto;
 import HealMeals.Api.model.Recipe;
 import HealMeals.Api.model.RecipeIngredient;
 import HealMeals.Api.model.User;
@@ -60,5 +61,14 @@ public class RecipeMapper {
                         .collect(Collectors.toList()) : null)
                 .build();
         return dto;
+    }
+
+    public static RecipeSummaryDto toSummaryDto(Recipe recipe){
+        return new RecipeSummaryDto(
+                recipe.getRecipe_id(),
+                recipe.getTitle(),
+                recipe.getDescription(),
+                recipe.getStars()
+        );
     }
 }
