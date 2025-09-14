@@ -2,6 +2,7 @@ package HealMeals.Api.Controller;
 
 import HealMeals.Api.DTO.UserDTO;
 import HealMeals.Api.service.UserService;
+import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -17,7 +18,7 @@ public class UserController {
     private final UserService userService;
 
     @PostMapping
-    public ResponseEntity<UserDTO> create(@RequestBody UserDTO dto) {
+    public ResponseEntity<UserDTO> create(@Valid @RequestBody UserDTO dto) {
         return ResponseEntity.ok(userService.createUser(dto));
     }
 
@@ -32,7 +33,7 @@ public class UserController {
     }
 
     @PutMapping("/{id}")
-    public ResponseEntity<UserDTO> update(@PathVariable UUID id, @RequestBody UserDTO dto) {
+    public ResponseEntity<UserDTO> update(@PathVariable UUID id, @Valid @RequestBody UserDTO dto) {
         return ResponseEntity.ok(userService.updateUser(id, dto));
     }
 

@@ -14,15 +14,15 @@ import java.util.UUID;
 public class UserCondition {
 
     @Id
-    @GeneratedValue(strategy = GenerationType.UUID)
-    @Column(name = "id", updatable = false, nullable = false, columnDefinition = "BINARY(16)")
+    @GeneratedValue
     private UUID id;
 
-    @ManyToOne(fetch = FetchType.LAZY)
+    @ManyToOne
     @JoinColumn(name = "user_id", nullable = false)
     private User user;
 
-    @ManyToOne(fetch = FetchType.LAZY)
+    @ManyToOne
     @JoinColumn(name = "condition_id", nullable = false)
     private ProfileCondition condition;
 }
+
