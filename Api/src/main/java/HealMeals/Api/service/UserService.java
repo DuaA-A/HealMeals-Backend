@@ -1,4 +1,5 @@
 package HealMeals.Api.service;
+
 import HealMeals.Api.DTO.UserDTO;
 import HealMeals.Api.Repo.UserRepository;
 import HealMeals.Api.model.User;
@@ -7,6 +8,7 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
+import java.util.UUID;
 
 @Service
 @RequiredArgsConstructor
@@ -18,7 +20,7 @@ public class UserService {
         User user = User.builder()
                 .name(dto.getName())
                 .email(dto.getEmail())
-                .password("hashed")
+                .password("hashed") 
                 .role(dto.getRole())
                 .gender(dto.getGender())
                 .dob(dto.getDob())
@@ -31,6 +33,35 @@ public class UserService {
 
     public List<UserDTO> getAllUsers() {
         return userRepository.findAll().stream().map(this::mapToDTO).toList();
+    }
+
+    public UserDTO getUserById(UUID id) {
+        User user = userRepository.findById(id)
+                .orElseThrow(() -> new RuntimeException("User not found"));
+        return mapToDTO(user);
+    }
+
+    public UserDTO updateUser(UUID id, UserDTO dto) {
+        User user = userRepository.findById(id)
+                .orElseThrow(() -> new RuntimeException("User not found"));
+
+        user.setName(dto.getName());
+        user.setEmail(dto.getEmail());
+        user.setRole(dto.getRole());
+        user.setGender(dto.getGender());
+        user.setDob(dto.getDob());
+        user.setAddress(dto.getAddress());
+        user.setPhone(dto.getPhone());
+
+        userRepository.save(user);
+        return mapToDTO(user);
+    }
+
+    public void deleteUser(UUID id) {
+        if (!userRepository.existsById(id)) {
+            throw new RuntimeException("User not found");
+        }
+        userRepository.deleteById(id);
     }
 
     private UserDTO mapToDTO(User user) {
