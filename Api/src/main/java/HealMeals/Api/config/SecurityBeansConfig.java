@@ -26,7 +26,9 @@ public class SecurityBeansConfig {
             .csrf(csrf -> csrf.disable())
             .authorizeHttpRequests(auth -> auth
                 .requestMatchers("/swagger-ui/**", "/v3/api-docs/**").permitAll()
-                .anyRequest().authenticated()
+                    .requestMatchers("/api/notification/**").permitAll()
+
+                    .anyRequest().authenticated()
             )
             .httpBasic(Customizer.withDefaults());
 
