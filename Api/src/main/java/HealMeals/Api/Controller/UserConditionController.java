@@ -1,15 +1,12 @@
 package HealMeals.Api.Controller;
-
+import HealMeals.Api.DTO.UserConditionDTO;
 import HealMeals.Api.service.UserConditionService;
 import lombok.RequiredArgsConstructor;
-
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
 import java.util.UUID;
-
-import HealMeals.Api.DTO.UserConditionDTO;
 
 @RestController
 @RequestMapping("/api/user-conditions")
@@ -27,5 +24,16 @@ public class UserConditionController {
     @GetMapping
     public ResponseEntity<List<UserConditionDTO>> getAll() {
         return ResponseEntity.ok(userConditionService.getAll());
+    }
+
+    @GetMapping("/{id}")
+    public ResponseEntity<UserConditionDTO> getById(@PathVariable UUID id) {
+        return ResponseEntity.ok(userConditionService.getById(id));
+    }
+
+    @DeleteMapping("/{id}")
+    public ResponseEntity<Void> delete(@PathVariable UUID id) {
+        userConditionService.delete(id);
+        return ResponseEntity.noContent().build();
     }
 }

@@ -1,22 +1,9 @@
 package HealMeals.Api.model;
 
-import java.util.List;
+import jakarta.persistence.*;
+import jakarta.validation.constraints.NotBlank;
+import lombok.*;
 import java.util.UUID;
-
-import org.hibernate.annotations.GenericGenerator;
-
-import jakarta.persistence.CascadeType;
-import jakarta.persistence.Column;
-import jakarta.persistence.Entity;
-import jakarta.persistence.GeneratedValue;
-import jakarta.persistence.Id;
-import jakarta.persistence.OneToMany;
-import jakarta.persistence.Table;
-import lombok.AllArgsConstructor;
-import lombok.Builder;
-import lombok.Getter;
-import lombok.NoArgsConstructor;
-import lombok.Setter;
 
 @Entity
 @Table(name = "profile_conditions")
@@ -28,14 +15,16 @@ import lombok.Setter;
 public class ProfileCondition {
 
     @Id
-    @GeneratedValue(generator = "UUID")
-    @GenericGenerator(name = "UUID", strategy = "org.hibernate.id.UUIDGenerator")
-    @Column(updatable = false, nullable = false, columnDefinition = "BINARY(16)")
+    @GeneratedValue
     private UUID conditionId;
 
-    @Column(nullable = false)
     private String conditionName;
 
-    @OneToMany(mappedBy = "condition", cascade = CascadeType.ALL, orphanRemoval = true)
-    private List<UserCondition> userConditions;
+    @Enumerated(EnumType.STRING)
+    private ConditionType conditionType; 
+
+    public enum ConditionType {
+        DISEASE,
+        ALLERGY
+    }
 }

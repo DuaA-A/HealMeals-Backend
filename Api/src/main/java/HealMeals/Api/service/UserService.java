@@ -3,10 +3,13 @@ package HealMeals.Api.service;
 import HealMeals.Api.DTO.UserDTO;
 import HealMeals.Api.Repo.UserRepository;
 import HealMeals.Api.model.User;
+import HealMeals.Api.Mapper.UserMapper;
 import jakarta.annotation.PostConstruct;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
+import java.time.LocalDate;
 import java.util.List;
 import java.util.UUID;
 
@@ -17,34 +20,40 @@ public class UserService {
     private final UserRepository userRepository;
 
     public UserDTO createUser(UserDTO dto) {
+        if (userRepository.existsByEmail(dto.getEmail())) {
+            throw new IllegalArgumentException("Email already in use");
+        }
         User user = User.builder()
                 .name(dto.getName())
                 .email(dto.getEmail())
-                .password("hashed") 
-                .role(dto.getRole())
+                .password("") // use AuthService.register to set password
+                .role(dto.getRole() == null ? "USER" : dto.getRole())
                 .gender(dto.getGender())
                 .dob(dto.getDob())
                 .address(dto.getAddress())
                 .phone(dto.getPhone())
                 .build();
-        userRepository.save(user);
-        return mapToDTO(user);
+        user = userRepository.save(user);
+        return UserMapper.toDTO(user);
     }
 
     public List<UserDTO> getAllUsers() {
-        return userRepository.findAll().stream().map(this::mapToDTO).toList();
+        return userRepository.findAll().stream().map(UserMapper::toDTO).toList();
     }
 
     public UserDTO getUserById(UUID id) {
         User user = userRepository.findById(id)
                 .orElseThrow(() -> new RuntimeException("User not found"));
-        return mapToDTO(user);
+        return UserMapper.toDTO(user);
     }
 
+    @Transactional
     public UserDTO updateUser(UUID id, UserDTO dto) {
         User user = userRepository.findById(id)
                 .orElseThrow(() -> new RuntimeException("User not found"));
-
+        if (!user.getEmail().equals(dto.getEmail()) && userRepository.existsByEmail(dto.getEmail())) {
+            throw new IllegalArgumentException("Email already in use");
+        }
         user.setName(dto.getName());
         user.setEmail(dto.getEmail());
         user.setRole(dto.getRole());
@@ -52,9 +61,8 @@ public class UserService {
         user.setDob(dto.getDob());
         user.setAddress(dto.getAddress());
         user.setPhone(dto.getPhone());
-
-        userRepository.save(user);
-        return mapToDTO(user);
+        user = userRepository.save(user);
+        return HealMeals.Api.Mapper.UserMapper.toDTO(user);
     }
 
     public void deleteUser(UUID id) {
@@ -62,19 +70,6 @@ public class UserService {
             throw new RuntimeException("User not found");
         }
         userRepository.deleteById(id);
-    }
-
-    private UserDTO mapToDTO(User user) {
-        return UserDTO.builder()
-                .userId(user.getUserId())
-                .name(user.getName())
-                .email(user.getEmail())
-                .role(user.getRole())
-                .gender(user.getGender())
-                .dob(user.getDob())
-                .address(user.getAddress())
-                .phone(user.getPhone())
-                .build();
     }
 
     @PostConstruct
@@ -88,6 +83,7 @@ public class UserService {
                     .gender("Female")
                     .address("Cairo, Egypt")
                     .phone("01012345678")
+                    .dob(LocalDate.of(1990,1,1))
                     .build();
 
             User u2 = User.builder()
@@ -98,6 +94,7 @@ public class UserService {
                     .gender("Male")
                     .address("Alexandria, Egypt")
                     .phone("01198765432")
+                    .dob(LocalDate.of(1985,5,5))
                     .build();
 
             userRepository.saveAll(List.of(u1, u2));

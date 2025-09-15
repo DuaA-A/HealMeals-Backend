@@ -3,19 +3,18 @@ package HealMeals.Api.DTO;
 import jakarta.validation.constraints.Email;
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.Size;
-import lombok.*;
-
-import java.time.LocalDate;
-import java.util.UUID;
+import lombok.AllArgsConstructor;
+import lombok.Builder;
+import lombok.Getter;
+import lombok.NoArgsConstructor;
+import lombok.Setter;
 
 @Getter
 @Setter
 @NoArgsConstructor
 @AllArgsConstructor
 @Builder
-public class UserDTO {
-    private UUID userId;
-
+public class RegisterRequestDTO {
     @NotBlank
     private String name;
 
@@ -23,11 +22,13 @@ public class UserDTO {
     @Email
     private String email;
 
+    @NotBlank
+    @Size(min = 6)
+    private String password;
+
     private String role;
     private String gender;
-    private LocalDate dob;
+    private String dob; // iso date string optional (parse in service)
     private String address;
     private String phone;
-
-    // Note: password intentionally not included in this DTO for security.
 }
