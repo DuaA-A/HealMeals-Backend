@@ -13,6 +13,9 @@ import org.springframework.mail.javamail.JavaMailSenderImpl;
 import org.springframework.stereotype.Service;
 
 import java.time.LocalDateTime;
+import java.util.List;
+import java.util.UUID;
+import java.util.stream.Collectors;
 
 @Service
 @RequiredArgsConstructor
@@ -42,4 +45,22 @@ public class NotificationService {
         mailMessage.setText(msg);
         mailSender.send(mailMessage);
     }
+
+    public List<NotificationDto> getUnreadNotification(String mail){
+        User user = userRepository.findByEmail(mail)
+                .orElseThrow(()->new RuntimeException("User Not Found"));
+
+        return notificationRepository.findByIsReadFalseAndUser_UserId(user.getUserId())
+                .stream().map(NotificationMapper::toDto)
+                .collect(Collectors.toList());
+    }
+
+    public void markAsRead(UUID notificationId) {
+        Notification notification = notificationRepository.findById(notificationId)
+                .orElseThrow(()->new RuntimeException("Notification Not Found"));
+
+        notification.setIsRead(true);
+        notificationRepository.save(notification);
+    }
+
 }
