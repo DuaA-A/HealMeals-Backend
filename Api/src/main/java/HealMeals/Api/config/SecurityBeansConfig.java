@@ -27,6 +27,7 @@ public class SecurityBeansConfig {
             .authorizeHttpRequests(auth -> auth
                 .requestMatchers("/swagger-ui/**", "/v3/api-docs/**").permitAll()
                     .requestMatchers("/api/notification/**").permitAll()
+                    .requestMatchers("/api/recipes/**").permitAll()
 
                     .anyRequest().authenticated()
             )
