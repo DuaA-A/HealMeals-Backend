@@ -29,7 +29,14 @@ public class NotificationController {
 
     @PutMapping("/{id}/read")
     public ResponseEntity<String> markAsRead (@PathVariable UUID id){
+
         notificationService.markAsRead(id);
         return ResponseEntity.ok("Notification Marked As Read");
+    }
+
+    @GetMapping("/{mail}")
+    public ResponseEntity<List<NotificationDto>> getAllNotification(@PathVariable String mail){
+        List<NotificationDto> notificationsDto = notificationService.getAllNotification(mail);
+        return ResponseEntity.ok(notificationsDto);
     }
 }

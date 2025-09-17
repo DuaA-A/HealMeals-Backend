@@ -63,4 +63,14 @@ public class NotificationService {
         notificationRepository.save(notification);
     }
 
+    public List<NotificationDto> getAllNotification(String mail){
+        User user = userRepository.findByEmail(mail)
+                .orElseThrow(()->new RuntimeException("User Not Found"));
+
+        return notificationRepository.findByUser_UserIdOrderByDateSentDesc(user.getUserId())
+                .stream()
+                .map(NotificationMapper::toDto)
+                .collect(Collectors.toList());
+    }
+
 }
