@@ -22,7 +22,6 @@ public class Recipe {
     @Id
     @GeneratedValue(strategy = GenerationType.UUID)
     @Column(name = "recipe_id", columnDefinition = "BINARY(16)")
-
     private UUID recipe_id;
 
     @Column(nullable = false)

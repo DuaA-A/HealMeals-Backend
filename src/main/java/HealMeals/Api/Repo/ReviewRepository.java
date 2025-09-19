@@ -9,5 +9,5 @@ import java.util.UUID;
 
 public interface ReviewRepository extends JpaRepository<Review, UUID> {
     List<Review> findByUser_UserId(UUID userId);
-    List<Review> findByRecipe_RecipeId(UUID recipeId);
+    // List<Review> findByRecipe_RecipeId(UUID recipeId);
 }
