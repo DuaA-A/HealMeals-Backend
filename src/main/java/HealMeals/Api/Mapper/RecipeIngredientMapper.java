@@ -17,7 +17,7 @@ public class RecipeIngredientMapper {
 
     public static RecipeIngredientDTO toDto(RecipeIngredient recipeIngredient){
         RecipeIngredientDTO dto = RecipeIngredientDTO.builder()
-                .recipe_id(recipeIngredient.getRecipe().getRecipe_id())
+                .recipe_id(recipeIngredient.getRecipe().getRecipeId())
                 .ingredient_id(recipeIngredient.getIngredient().getIngredient_id())
                 .quantity(recipeIngredient.getQuantity())
                 .unit(recipeIngredient.getUnit())

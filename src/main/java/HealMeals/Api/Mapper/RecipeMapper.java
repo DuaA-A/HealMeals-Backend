@@ -13,7 +13,7 @@
          if (dto == null) return null;
 
          Recipe recipe = Recipe.builder()
-                 .recipe_id(dto.getRecipe_id())
+                 .recipeId(dto.getRecipe_id())
                  .description(dto.getDescription())
                  .stars(dto.getStars())
                  .steps(dto.getSteps())
@@ -45,7 +45,7 @@
          if (recipe == null) return null;
 
          RecipeDTO dto = RecipeDTO.builder()
-                 .recipe_id(recipe.getRecipe_id())
+                 .recipe_id(recipe.getRecipeId())
                  .description(recipe.getDescription())
                  .title(recipe.getTitle())
                  .stars(recipe.getStars())
@@ -65,7 +65,7 @@
 
      public static RecipeSummaryDto toSummaryDto(Recipe recipe){
          return new RecipeSummaryDto(
-                 recipe.getRecipe_id(),
+                 recipe.getRecipeId(),
                  recipe.getTitle(),
                  recipe.getDescription(),
                  recipe.getStars()
