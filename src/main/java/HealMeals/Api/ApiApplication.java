@@ -1,8 +1,8 @@
 package HealMeals.Api;
 
 import HealMeals.Api.Repo.ProfileConditionRepository;
-import HealMeals.Api.Repo.UserRepository;
 import HealMeals.Api.Repo.UserConditionRepository;
+import HealMeals.Api.Repo.UserRepository;
 import HealMeals.Api.model.ProfileCondition;
 import HealMeals.Api.model.User;
 import HealMeals.Api.model.UserCondition;
@@ -10,12 +10,14 @@ import org.springframework.boot.CommandLineRunner;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 import org.springframework.context.annotation.Bean;
+import org.springframework.data.jpa.repository.config.EnableJpaRepositories;
 import org.springframework.security.crypto.password.PasswordEncoder;
 
 import java.time.LocalDate;
 import java.util.List;
 
 @SpringBootApplication
+@EnableJpaRepositories(basePackages = "HealMeals.Api.Repo")
 public class ApiApplication {
     public static void main(String[] args) {
         SpringApplication.run(ApiApplication.class, args);
@@ -29,7 +31,6 @@ public class ApiApplication {
             PasswordEncoder passwordEncoder
     ) {
         return args -> {
-            // --- Step 1: Seed conditions (allergies + diseases) ---
             List<String> allergies = List.of(
                 "Milk","Eggs","Peanuts","Tree nuts","Fish",
                 "Crustacean shellfish","Wheat","Soy","Sesame",
@@ -56,7 +57,6 @@ public class ApiApplication {
                 }
             }
 
-            // --- Step 2: Seed dummy users ---
             if (userRepository.count() == 0) {
                 User alice = User.builder()
                         .name("Alice Johnson")
@@ -93,7 +93,6 @@ public class ApiApplication {
 
                 userRepository.saveAll(List.of(alice, bob, carol));
 
-                // --- Step 3: Assign some conditions ---
                 ProfileCondition diabetes = profileConditionRepository.findByConditionName("Diabetes").orElse(null);
                 ProfileCondition peanuts = profileConditionRepository.findByConditionName("Peanuts").orElse(null);
                 ProfileCondition asthma = profileConditionRepository.findByConditionName("Chronic respiratory disease (COPD/asthma)").orElse(null);

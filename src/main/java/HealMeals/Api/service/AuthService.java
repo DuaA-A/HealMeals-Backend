@@ -6,6 +6,8 @@ import HealMeals.Api.JwtUtil;
 import HealMeals.Api.Repo.UserRepository;
 import HealMeals.Api.model.User;
 import lombok.RequiredArgsConstructor;
+import org.springframework.security.core.Authentication;
+import org.springframework.security.authentication.*;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
@@ -21,6 +23,7 @@ public class AuthService {
     private final UserRepository userRepository;
     private final PasswordEncoder passwordEncoder;
     private final JwtUtil jwtUtil;
+    private final AuthenticationManager authenticationManager; // injected
 
     public User registerFromDto(RegisterRequestDTO dto) {
         if (userRepository.existsByEmail(dto.getEmail())) {
@@ -30,29 +33,39 @@ public class AuthService {
                 .name(dto.getName())
                 .email(dto.getEmail())
                 .password(passwordEncoder.encode(dto.getPassword()))
-                .role(dto.getRole() == null ? "USER" : dto.getRole())
+                .role(dto.getRole() == null ? "ROLE_USER" : dto.getRole())
                 .gender(dto.getGender())
                 .address(dto.getAddress())
                 .phone(dto.getPhone())
                 .build();
+
         if (dto.getDob() != null) {
             try {
                 user.setDob(LocalDate.parse(dto.getDob()));
             } catch (DateTimeParseException ignored) {
             }
         }
+
         return userRepository.save(user);
     }
 
+    // Use AuthenticationManager to authenticate (preferred)
     public String login(String email, String password) {
-        User user = userRepository.findByEmail(email)
-                .orElseThrow(() -> new RuntimeException("User not found"));
-        if (!passwordEncoder.matches(password, user.getPassword())) {
+        Authentication auth;
+        try {
+            auth = authenticationManager.authenticate(
+                    new UsernamePasswordAuthenticationToken(email, password)
+            );
+        } catch (BadCredentialsException ex) {
             throw new RuntimeException("Invalid credentials");
         }
-        return jwtUtil.generateToken(user.getEmail());
+
+        // at this point authentication succeeded; load user role
+        User user = userRepository.findByEmail(email).orElseThrow();
+        return jwtUtil.generateToken(user.getEmail(), user.getRole());
     }
 
+    // profile update etc (unchanged)
     public UserDTO updateProfile(UUID userId, UserDTO dto) {
         User user = userRepository.findById(userId)
                 .orElseThrow(() -> new NoSuchElementException("User not found"));
@@ -63,7 +76,16 @@ public class AuthService {
         if (dto.getPhone() != null) user.setPhone(dto.getPhone());
         if (dto.getDob() != null) user.setDob(dto.getDob());
         userRepository.save(user);
-        return dto;
+        return UserDTO.builder()
+                .userId(user.getUserId())
+                .name(user.getName())
+                .email(user.getEmail())
+                .role(user.getRole())
+                .gender(user.getGender())
+                .dob(user.getDob())
+                .address(user.getAddress())
+                .phone(user.getPhone())
+                .build();
     }
 
     public void updatePassword(UUID userId, String oldPassword, String newPassword) {
@@ -75,13 +97,8 @@ public class AuthService {
         user.setPassword(passwordEncoder.encode(newPassword));
         userRepository.save(user);
     }
-    public String logout() {
-        return "Successfully logged out (discard JWT on client).";
-    }
 
-    public User loadUserByEmail(String email) {
-        return userRepository.findByEmail(email)
-                .orElseThrow(() -> new RuntimeException("User not found"));
-    }
-
+    // public String logout() {
+    //     return "Successfully logged out (discard JWT on client).";
+    // }
 }
