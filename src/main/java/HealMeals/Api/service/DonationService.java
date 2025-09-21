@@ -1,10 +1,11 @@
 package HealMeals.Api.service;
 
+import HealMeals.Api.DTO.DonationResponseDTO;
 import lombok.RequiredArgsConstructor;
 
 import org.springframework.stereotype.Service;
 
-import HealMeals.Api.DTO.DonationDTO;
+import HealMeals.Api.DTO.DonationRequestDTO;
 import HealMeals.Api.Repo.DonationRepository;
 import HealMeals.Api.Repo.UserRepository;
 import HealMeals.Api.model.Donation;
@@ -22,8 +23,8 @@ public class DonationService {
     private final DonationRepository donationRepository;
     private final UserRepository userRepository;
 
-    public DonationDTO create(DonationDTO dto) {
-        User user = userRepository.findById(dto.getUserId())
+    public DonationResponseDTO create(DonationRequestDTO dto) {
+        /*User user = userRepository.findById(dto.getUserId())
                 .orElseThrow(() -> new RuntimeException("User not found"));
 
         Donation donation = Donation.builder()
@@ -34,16 +35,38 @@ public class DonationService {
                 .transactionId(dto.getTransactionId())
                 .build();
 
-        return toDTO(donationRepository.save(donation));
+        return toDTO(donationRepository.save(donation));*/
+
+
+        User user = userRepository.findByEmail(dto.getEmail()).orElse(null);
+        Donation donation = Donation.builder()
+                .firstName(dto.getFirstName())
+                .secondName(dto.getSecondName())
+                .email(dto.getEmail())
+                .amount(dto.getAmount())
+                .message(dto.getMessage())
+                .cardNumber(dto.getCardNumber())
+                .phoneNumber(dto.getPhoneNumber())
+                .expiryDate(dto.getExpiryDate())
+                .cvv(dto.getCvv())
+                .date(LocalDateTime.now())
+                .paymentMethod(dto.getPaymentMethod())
+                .transactionId(UUID.randomUUID().toString())
+                .user(user)
+                .build();
+
+        Donation saved = donationRepository.save(donation);
+
+        return toDTO(saved);
     }
 
-    public List<DonationDTO> getAll() {
+    public List<DonationResponseDTO> getAll() {
         return donationRepository.findAll().stream()
                 .map(this::toDTO)
                 .collect(Collectors.toList());
     }
 
-    public DonationDTO getById(UUID id) {
+    public DonationResponseDTO getById(UUID id) {
         return donationRepository.findById(id)
                 .map(this::toDTO)
                 .orElseThrow(() -> new RuntimeException("Donation not found"));
@@ -53,14 +76,16 @@ public class DonationService {
         donationRepository.deleteById(id);
     }
 
-    private DonationDTO toDTO(Donation donation) {
-        DonationDTO dto = new DonationDTO();
+    private DonationResponseDTO toDTO(Donation donation) {
+        DonationResponseDTO dto = new DonationResponseDTO();
         dto.setDonationId(donation.getDonationId());
-        dto.setUserId(donation.getUser().getUserId());
+        dto.setFirstName(donation.getFirstName());
+        dto.setSecondName(donation.getSecondName());
         dto.setAmount(donation.getAmount());
-        dto.setDate(donation.getDate());
+        dto.setEmail(donation.getEmail());
+        dto.setMessage(donation.getMessage());
+        dto.setPhoneNumber(donation.getPhoneNumber());
         dto.setPaymentMethod(donation.getPaymentMethod());
-        dto.setTransactionId(donation.getTransactionId());
         return dto;
     }
 }

@@ -1,6 +1,7 @@
 package HealMeals.Api.Controller;
 
-import HealMeals.Api.DTO.DonationDTO;
+import HealMeals.Api.DTO.DonationRequestDTO;
+import HealMeals.Api.DTO.DonationResponseDTO;
 import HealMeals.Api.service.DonationService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
@@ -17,17 +18,17 @@ public class DonationController {
     private final DonationService donationService;
 
     @PostMapping
-    public ResponseEntity<DonationDTO> create(@RequestBody DonationDTO dto) {
+    public ResponseEntity<DonationResponseDTO> create(@RequestBody DonationRequestDTO dto) {
         return ResponseEntity.ok(donationService.create(dto));
     }
 
     @GetMapping
-    public ResponseEntity<List<DonationDTO>> getAll() {
+    public ResponseEntity<List<DonationResponseDTO>> getAll() {
         return ResponseEntity.ok(donationService.getAll());
     }
 
     @GetMapping("/{id}")
-    public ResponseEntity<DonationDTO> getById(@PathVariable UUID id) {
+    public ResponseEntity<DonationResponseDTO> getById(@PathVariable UUID id) {
         return ResponseEntity.ok(donationService.getById(id));
     }
 
