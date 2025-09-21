@@ -2,10 +2,13 @@ package HealMeals.Api.service;
 
 import HealMeals.Api.DTO.RegisterRequestDTO;
 import HealMeals.Api.DTO.UserDTO;
+import HealMeals.Api.Mapper.UserMapper;
 import HealMeals.Api.JwtUtil;
 import HealMeals.Api.Repo.UserRepository;
 import HealMeals.Api.model.User;
 import lombok.RequiredArgsConstructor;
+import HealMeals.Api.DTO.AuthResponseDTO;
+
 import org.springframework.security.core.Authentication;
 import org.springframework.security.authentication.*;
 import org.springframework.security.crypto.password.PasswordEncoder;
@@ -16,6 +19,8 @@ import java.time.format.DateTimeParseException;
 import java.util.NoSuchElementException;
 import java.util.UUID;
 
+import HealMeals.Api.DTO.AuthResponseDTO;
+
 @Service
 @RequiredArgsConstructor
 public class AuthService {
@@ -23,49 +28,48 @@ public class AuthService {
     private final UserRepository userRepository;
     private final PasswordEncoder passwordEncoder;
     private final JwtUtil jwtUtil;
-    private final AuthenticationManager authenticationManager; // injected
 
-    public User registerFromDto(RegisterRequestDTO dto) {
-        if (userRepository.existsByEmail(dto.getEmail())) {
-            throw new IllegalArgumentException("Email already in use");
-        }
+    // public AuthService(UserRepository userRepository,
+    //                     PasswordEncoder passwordEncoder,
+    //                     JwtUtil jwtUtil) {
+    //     this.userRepository = userRepository;
+    //     this.passwordEncoder = passwordEncoder;
+    //     this.jwtUtil = jwtUtil;
+    // }
+
+    public AuthResponseDTO registerFromDto(RegisterRequestDTO dto) {
         User user = User.builder()
                 .name(dto.getName())
                 .email(dto.getEmail())
                 .password(passwordEncoder.encode(dto.getPassword()))
-                .role(dto.getRole() == null ? "ROLE_USER" : dto.getRole())
+                .role("USER") // always USER for self-registration
                 .gender(dto.getGender())
+                .dob(dto.getDob())
                 .address(dto.getAddress())
                 .phone(dto.getPhone())
                 .build();
-
-        if (dto.getDob() != null) {
-            try {
-                user.setDob(LocalDate.parse(dto.getDob()));
-            } catch (DateTimeParseException ignored) {
-            }
-        }
-
-        return userRepository.save(user);
+        user = userRepository.save(user);
+        // FIX: Pass both email + role, since JwtUtil expects 2 params
+        String token = jwtUtil.generateToken(user.getEmail(), user.getRole());
+        return AuthResponseDTO.builder()
+                .token(token)
+                .user(UserMapper.toDTO(user))
+                .build();
     }
 
-    // Use AuthenticationManager to authenticate (preferred)
-    public String login(String email, String password) {
-        Authentication auth;
-        try {
-            auth = authenticationManager.authenticate(
-                    new UsernamePasswordAuthenticationToken(email, password)
-            );
-        } catch (BadCredentialsException ex) {
-            throw new RuntimeException("Invalid credentials");
+    public AuthResponseDTO login(String email, String rawPassword) {
+        User user = userRepository.findByEmail(email)
+                .orElseThrow(() -> new RuntimeException("Invalid email or password"));
+        if (!passwordEncoder.matches(rawPassword, user.getPassword())) {
+            throw new RuntimeException("Invalid email or password");
         }
-
-        // at this point authentication succeeded; load user role
-        User user = userRepository.findByEmail(email).orElseThrow();
-        return jwtUtil.generateToken(user.getEmail(), user.getRole());
+        String token = jwtUtil.generateToken(user.getEmail(), user.getRole());
+        return AuthResponseDTO.builder()
+                .token(token)
+                .user(UserMapper.toDTO(user))
+                .build();
     }
 
-    // profile update etc (unchanged)
     public UserDTO updateProfile(UUID userId, UserDTO dto) {
         User user = userRepository.findById(userId)
                 .orElseThrow(() -> new NoSuchElementException("User not found"));

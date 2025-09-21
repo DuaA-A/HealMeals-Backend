@@ -22,7 +22,7 @@ public class Recipe {
     @Id
     @GeneratedValue(strategy = GenerationType.UUID)
     @Column(name = "recipe_id", columnDefinition = "BINARY(16)")
-    private UUID recipeId;   // camelCase
+    private UUID recipeId;  
 
     @Column(nullable = false)
     private String title;

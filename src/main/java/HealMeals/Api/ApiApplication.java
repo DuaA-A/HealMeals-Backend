@@ -32,27 +32,30 @@ public class ApiApplication {
     ) {
         return args -> {
             List<String> allergies = List.of(
-                "Milk","Eggs","Peanuts","Tree nuts","Fish",
-                "Crustacean shellfish","Wheat","Soy","Sesame",
-                "Mustard","Sulphites"
+                    "Milk","Eggs","Peanuts","Tree nuts","Fish",
+                    "Crustacean shellfish","Wheat","Soy","Sesame",
+                    "Mustard","Sulphites"
             );
             List<String> diseases = List.of(
-                "Diabetes","Hypertension","Obesity","Coronary heart disease",
-                "Stroke","Chronic respiratory disease (COPD/asthma)",
-                "Cancer","Arthritis","Chronic kidney disease"
+                    "Diabetes","Hypertension","Obesity","Coronary heart disease",
+                    "Stroke","Chronic respiratory disease (COPD/asthma)",
+                    "Cancer","Arthritis","Chronic kidney disease"
             );
 
             for (String name : allergies) {
                 if (!profileConditionRepository.existsByConditionName(name)) {
                     profileConditionRepository.save(ProfileCondition.builder()
                             .conditionName(name)
+                            .conditionType(ProfileCondition.ConditionType.ALLERGY)
                             .build());
                 }
             }
+
             for (String name : diseases) {
                 if (!profileConditionRepository.existsByConditionName(name)) {
                     profileConditionRepository.save(ProfileCondition.builder()
                             .conditionName(name)
+                            .conditionType(ProfileCondition.ConditionType.DISEASE)
                             .build());
                 }
             }
@@ -91,11 +94,23 @@ public class ApiApplication {
                         .phone("01234567890")
                         .build();
 
-                userRepository.saveAll(List.of(alice, bob, carol));
+                User david = User.builder()
+                        .name("David Brown")
+                        .email("david@example.com")
+                        .password(passwordEncoder.encode("password321"))
+                        .role("USER")
+                        .gender("Male")
+                        .dob(LocalDate.of(1992, 11, 10))
+                        .address("Luxor, Egypt")
+                        .phone("01555555555")
+                        .build();
+
+                userRepository.saveAll(List.of(alice, bob, carol, david));
 
                 ProfileCondition diabetes = profileConditionRepository.findByConditionName("Diabetes").orElse(null);
                 ProfileCondition peanuts = profileConditionRepository.findByConditionName("Peanuts").orElse(null);
                 ProfileCondition asthma = profileConditionRepository.findByConditionName("Chronic respiratory disease (COPD/asthma)").orElse(null);
+                ProfileCondition milk = profileConditionRepository.findByConditionName("Milk").orElse(null);
 
                 if (diabetes != null) {
                     userConditionRepository.save(UserCondition.builder()
@@ -115,8 +130,15 @@ public class ApiApplication {
                             .condition(asthma)
                             .build());
                 }
+                if (milk != null) {
+                    userConditionRepository.save(UserCondition.builder()
+                            .user(david)
+                            .condition(milk)
+                            .build());
+                }
             }
-            System.out.println("Dummy data seeding complete");
+
+            System.out.println("^_^ Dummy data seeding complete: Users + Conditions ready.");
         };
     }
 }

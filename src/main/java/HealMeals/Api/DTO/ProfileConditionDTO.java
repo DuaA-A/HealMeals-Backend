@@ -2,7 +2,7 @@ package HealMeals.Api.DTO;
 
 import java.util.UUID;
 
-import jakarta.validation.constraints.NotBlank;
+import HealMeals.Api.model.ProfileCondition;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Getter;
@@ -16,7 +16,6 @@ import lombok.Setter;
 @Builder
 public class ProfileConditionDTO {
     private UUID conditionId;
-
-    @NotBlank
     private String conditionName;
+    private ProfileCondition.ConditionType conditionType;
 }

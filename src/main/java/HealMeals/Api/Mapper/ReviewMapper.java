@@ -1,6 +1,6 @@
 package HealMeals.Api.Mapper;
 
-import HealMeals.Api.DTO.ReviewDto;
+import HealMeals.Api.DTO.ReviewDTO;
 import HealMeals.Api.model.Recipe;
 import HealMeals.Api.model.Review;
 import HealMeals.Api.model.User;
@@ -8,22 +8,27 @@ import HealMeals.Api.model.User;
 import java.time.LocalDateTime;
 
 public class ReviewMapper {
-    public static ReviewDto toDto (Review review){
-        return ReviewDto.builder()
-                .recipe_id(review.getRecipe().getRecipe_id())
-                .review_id(review.getReview_id())
+
+    public static ReviewDTO toDto(Review review) {
+        if (review == null) return null;
+
+        return ReviewDTO.builder()
+                .reviewId(review.getReviewId())
+                .recipeId(review.getRecipe() != null ? review.getRecipe().getRecipeId() : null)
                 .comment(review.getComment())
-                .date(LocalDateTime.now())
+                .date(review.getDate())
                 .rating(review.getRating())
-                .user_id(review.getUser().getUserId())
+                .userId(review.getUser() != null ? review.getUser().getUserId() : null)
                 .build();
     }
 
-    public static Review toEntity(ReviewDto dto, User user, Recipe recipe) {
+    public static Review toEntity(ReviewDTO dto, User user, Recipe recipe) {
+        if (dto == null) return null;
+
         return Review.builder()
+                .reviewId(dto.getReviewId())
                 .comment(dto.getComment())
-                .date(LocalDateTime.now())
-                .review_id(dto.getReview_id())
+                .date(dto.getDate() != null ? dto.getDate() : LocalDateTime.now())
                 .rating(dto.getRating())
                 .recipe(recipe)
                 .user(user)

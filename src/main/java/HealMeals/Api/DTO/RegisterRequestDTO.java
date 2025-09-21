@@ -1,5 +1,7 @@
 package HealMeals.Api.DTO;
 
+import java.time.LocalDate;
+
 import jakarta.validation.constraints.Email;
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.Size;
@@ -28,7 +30,7 @@ public class RegisterRequestDTO {
 
     private String role;
     private String gender;
-    private String dob; // iso date string optional (parse in service)
+    private LocalDate dob; 
     private String address;
     private String phone;
 }

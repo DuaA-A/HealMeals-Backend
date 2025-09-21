@@ -1,14 +1,17 @@
 package HealMeals.Api.Controller;
 
+import HealMeals.Api.DTO.AuthResponseDTO;
 import HealMeals.Api.DTO.RegisterRequestDTO;
 import HealMeals.Api.DTO.UserDTO;
 import HealMeals.Api.service.AuthService;
 import lombok.RequiredArgsConstructor;
+
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
-import java.util.Map;
 import java.util.UUID;
+
+import HealMeals.Api.DTO.AuthRequest;
 
 @RestController
 @RequestMapping("/api/auth")
@@ -18,14 +21,13 @@ public class AuthController {
     private final AuthService authService;
 
     @PostMapping("/register")
-    public ResponseEntity<?> register(@RequestBody RegisterRequestDTO dto) {
+    public ResponseEntity<AuthResponseDTO> register(@RequestBody RegisterRequestDTO dto) {
         return ResponseEntity.ok(authService.registerFromDto(dto));
     }
 
     @PostMapping("/login")
-    public ResponseEntity<Map<String, String>> login(@RequestBody Map<String, String> credentials) {
-        String token = authService.login(credentials.get("email"), credentials.get("password"));
-        return ResponseEntity.ok(Map.of("token", token));
+    public ResponseEntity<AuthResponseDTO> login(@RequestBody AuthRequest request) {
+        return ResponseEntity.ok(authService.login(request.getEmail(), request.getPassword()));
     }
 
     @PutMapping("/update-profile/{id}")
