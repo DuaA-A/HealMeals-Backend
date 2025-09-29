@@ -49,6 +49,14 @@ public class UserConditionService {
         return userConditionRepository.findAll().stream().map(UserConditionMapper::toDTO).toList();
     }
 
+    public List<UserConditionDTO> getAllUserConditions(UUID userId) {
+        return userConditionRepository.findAllByUser_UserId(userId)
+                .stream()
+                .map(UserConditionMapper::toDTO)
+                .toList();
+    }
+
+
     public UserConditionDTO getById(UUID id) {
         UserCondition uc = userConditionRepository.findById(id).orElseThrow(() -> new RuntimeException("UserCondition not found"));
         return UserConditionMapper.toDTO(uc);

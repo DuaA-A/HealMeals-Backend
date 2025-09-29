@@ -26,6 +26,11 @@ public class UserConditionController {
         return ResponseEntity.ok(userConditionService.getAll());
     }
 
+    @GetMapping("/users/{userId}")
+    public ResponseEntity<List<UserConditionDTO>> getAllUserConditions(@PathVariable UUID userId) {
+        return ResponseEntity.ok(userConditionService.getAllUserConditions(userId));
+    }
+
     @GetMapping("/{id}")
     public ResponseEntity<UserConditionDTO> getById(@PathVariable UUID id) {
         return ResponseEntity.ok(userConditionService.getById(id));
