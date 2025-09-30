@@ -11,6 +11,7 @@ public class UserConditionMapper {
                 .userId(uc.getUser().getUserId())
                 .conditionId(uc.getCondition().getConditionId())
                 .conditionName(uc.getCondition().getConditionName())
+                .conditionType(uc.getCondition().getConditionType())
                 .build();
     }
 }
