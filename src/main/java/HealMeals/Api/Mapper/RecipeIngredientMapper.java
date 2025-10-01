@@ -19,6 +19,7 @@ public class RecipeIngredientMapper {
         RecipeIngredientDTO dto = RecipeIngredientDTO.builder()
                 .recipe_id(recipeIngredient.getRecipe().getRecipeId())
                 .ingredient_id(recipeIngredient.getIngredient().getIngredient_id())
+                .ingredient_name(recipeIngredient.getIngredient().getName())
                 .quantity(recipeIngredient.getQuantity())
                 .unit(recipeIngredient.getUnit())
                 .build();

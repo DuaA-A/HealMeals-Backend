@@ -68,6 +68,7 @@
                  recipe.getRecipeId(),
                  recipe.getTitle(),
                  recipe.getDescription(),
+                 recipe.getPrepTime(),
                  recipe.getStars()
          );
      }
