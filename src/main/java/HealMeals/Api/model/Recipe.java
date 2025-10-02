@@ -2,6 +2,8 @@ package HealMeals.Api.model;
 
 import jakarta.persistence.*;
 import lombok.*;
+import HealMeals.Api.model.Favourite;
+import HealMeals.Api.model.RecipeRating;
 
 import org.hibernate.annotations.CreationTimestamp;
 import org.hibernate.annotations.UpdateTimestamp;
@@ -12,7 +14,7 @@ import java.util.List;
 import java.util.UUID;
 
 @Entity
-@Table(name = "recipes")
+@Table(name = "recipe")
 @Getter
 @Setter
 @NoArgsConstructor
@@ -60,6 +62,7 @@ public class Recipe {
     private User updatedBy;
 
     @OneToMany(mappedBy = "recipe", cascade = CascadeType.ALL, orphanRemoval = true)
+    @Builder.Default
     private List<RecipeIngredient> recipeIngredients = new ArrayList<>();
 
     @OneToMany(mappedBy = "recipe", cascade = CascadeType.ALL, orphanRemoval = true)

@@ -17,7 +17,6 @@ import lombok.Data;
 @NoArgsConstructor
 @AllArgsConstructor
 @Builder
-// @Data
 public class RecipeIngredientDTO {
     private UUID ingredientId;  
     private UUID recipeId;      

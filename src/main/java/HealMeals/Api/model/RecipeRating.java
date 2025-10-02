@@ -5,6 +5,9 @@ import lombok.*;
 
 import java.time.LocalDateTime;
 import java.util.UUID;
+
+import HealMeals.Api.model.Recipe;
+import HealMeals.Api.model.User;
 import lombok.Builder;
 
 
@@ -36,7 +39,8 @@ public class RecipeRating {
     private Recipe recipe;
 
     @Column(nullable = false)
-    private int stars; // 1–5
+    @Builder.Default
+    private int stars =  0 ; // 1–5
 
     private LocalDateTime ratedAt;
 }
