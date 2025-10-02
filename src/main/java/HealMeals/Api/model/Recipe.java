@@ -2,6 +2,7 @@ package HealMeals.Api.model;
 
 import jakarta.persistence.*;
 import lombok.*;
+import HealMeals.Api.model.RecipeCondition;
 import HealMeals.Api.model.Favourite;
 import HealMeals.Api.model.RecipeRating;
 
@@ -71,4 +72,9 @@ public class Recipe {
     @OneToMany(mappedBy = "recipe", cascade = CascadeType.ALL, orphanRemoval = true)
     @Builder.Default
     private List<RecipeStep> steps = new ArrayList<>();
+
+    @OneToMany(mappedBy = "recipe", cascade = CascadeType.ALL, orphanRemoval = true)
+    @Builder.Default
+    private List<RecipeCondition> recipeConditions = new ArrayList<>();
+
 }

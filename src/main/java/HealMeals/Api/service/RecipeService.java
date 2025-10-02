@@ -9,11 +9,14 @@ import HealMeals.Api.model.Recipe;
 import HealMeals.Api.model.RecipeIngredient;
 import HealMeals.Api.model.User;
 import HealMeals.Api.Repo.IngredientRepository;
+import HealMeals.Api.Repo.ProfileConditionRepository;
 import HealMeals.Api.Repo.RecipeIngredientRepository;
 import HealMeals.Api.Repo.RecipeRepository;
 import HealMeals.Api.Repo.UserRepository;
 import jakarta.persistence.EntityNotFoundException;
 import lombok.RequiredArgsConstructor;
+import HealMeals.Api.model.RecipeCondition;
+
 import org.springframework.stereotype.Service;
 
 import java.time.LocalDateTime;
@@ -29,7 +32,8 @@ public class RecipeService {
     private final RecipeIngredientRepository recipeIngredientRepository;
     private final IngredientRepository ingredientRepository;
     private final UserRepository userRepository;
-
+    private final ProfileConditionRepository profileConditionRepository; 
+    
     public RecipeDTO createRecipe(RecipeDTO dto, UUID createsById) {
         User createdBy = userRepository.findById(createsById)
                 .orElseThrow(() -> new RuntimeException("User Not Found"));
@@ -38,7 +42,8 @@ public class RecipeService {
         recipe.setDateAdded(LocalDateTime.now());
         recipe.setDateUpdated(LocalDateTime.now());
 
-        if (recipe.getRecipeIngredients() != null) {
+        // Ingredients
+        if (dto.getRecipeIngredients() != null) {
             List<RecipeIngredient> recipeIngredients = dto.getRecipeIngredients().stream()
                     .map(riDto -> {
                         Ingredient ingredient = ingredientRepository.findById(riDto.getIngredientId())
@@ -52,6 +57,20 @@ public class RecipeService {
                     }).collect(Collectors.toList());
             recipe.setRecipeIngredients(recipeIngredients);
         }
+
+        if (dto.getRecipeConditions() != null) {
+            recipe.setRecipeConditions(dto.getRecipeConditions().stream()
+                    .map(rcDto -> {
+                        var condition = profileConditionRepository.findById(rcDto.getConditionId())
+                                .orElseThrow(() -> new EntityNotFoundException("Condition Not Found"));
+                        RecipeCondition rc = new RecipeCondition();
+                        rc.setRecipe(recipe);
+                        rc.setCondition(condition);
+                        rc.setSafe(rcDto.isSafe());
+                        return rc;
+                    }).collect(Collectors.toList()));
+        }
+
         Recipe saved = recipeRepository.save(recipe);
         return RecipeMapper.toDTO(saved);
     }
