@@ -2,68 +2,71 @@ package HealMeals.Api.model;
 
 import jakarta.persistence.*;
 import lombok.*;
-import org.hibernate.annotations.JdbcTypeCode;
-import org.hibernate.type.SqlTypes;
 
-import java.sql.Time;
+import org.hibernate.annotations.CreationTimestamp;
+import org.hibernate.annotations.UpdateTimestamp;
+
+import java.time.Duration;
 import java.time.LocalDateTime;
-import java.time.LocalTime;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.UUID;
 
 @Entity
-@Table(name = "recipe")
+@Table(name = "recipes")
 @Getter
 @Setter
 @NoArgsConstructor
 @AllArgsConstructor
 @Builder
 public class Recipe {
+
     @Id
-    @GeneratedValue(strategy = GenerationType.UUID)
-    @Column(name = "recipe_id", columnDefinition = "BINARY(16)")
-    private UUID recipeId;  
+    @GeneratedValue(strategy = GenerationType.AUTO)
+    private UUID id;
 
-    @Column(nullable = false)
-    private String title;
+    private String name;
 
-    @Column(nullable = false)
+    @Column(length = 1000)
     private String description;
 
+    @Column(length = 300)
+    private String summary; 
 
-    private LocalTime prepTime;
+    @OneToMany(mappedBy = "recipe", cascade = CascadeType.ALL, orphanRemoval = true)
+    private List<RecipeRating> ratings = new ArrayList<>();
 
-    @ManyToOne
-    @JoinColumn(name = "createdBy")
-    @JdbcTypeCode(SqlTypes.BINARY)
-    private User createdBy;
+    public double getAverageRating() {
+        if (ratings == null || ratings.isEmpty()) return 0.0;
+        return ratings.stream()
+                .mapToInt(RecipeRating::getStars)
+                .average()
+                .orElse(0.0);
+    }
 
+    private Integer prepTimeMinutes;
 
-    @ManyToOne
-    @JoinColumn(name = "updatedBy")
-    @JdbcTypeCode(SqlTypes.BINARY)
-    private User updatedBy;
-
-
-    @Column(nullable = false)
+    @CreationTimestamp
     private LocalDateTime dateAdded;
 
-
-    @Column(nullable = false)
+    @UpdateTimestamp
     private LocalDateTime dateUpdated;
 
-    private int stars;
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "created_by")
+    private User createdBy;
 
-
-    @ElementCollection
-    @CollectionTable(
-            name = "recipe_steps",
-            joinColumns = @JoinColumn(name = "recipe_id")
-    )
-    @Column(name = "step", nullable = false)
-    private List<String> steps;
-
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "updated_by")
+    private User updatedBy;
 
     @OneToMany(mappedBy = "recipe", cascade = CascadeType.ALL, orphanRemoval = true)
     private List<RecipeIngredient> recipeIngredients;
+
+    @OneToMany(mappedBy = "recipe", cascade = CascadeType.ALL, orphanRemoval = true)
+    private List<Favourite> favourites;
+
+    @OneToMany(mappedBy = "recipe", cascade = CascadeType.ALL, orphanRemoval = true)
+    private List<RecipeStep> steps = new ArrayList<>();
+
 }

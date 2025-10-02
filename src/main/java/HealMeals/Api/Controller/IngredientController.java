@@ -48,4 +48,3 @@ public class IngredientController {
         return ResponseEntity.ok("Ingredient deleted successfully");
     }
 }
-

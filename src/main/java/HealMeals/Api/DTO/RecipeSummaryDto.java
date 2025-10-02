@@ -11,9 +11,9 @@ import java.util.UUID;
 @AllArgsConstructor
 @Builder
 public class RecipeSummaryDto {
-    private UUID recipe_id;
-    private String title;
+    private UUID recipeId;
+    private String name;
     private String description;
-    private LocalTime prepTime;
+    private Integer prepTimeMinutes;
     private int stars;
 }

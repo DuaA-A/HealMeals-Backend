@@ -10,9 +10,9 @@ import java.util.UUID;
 @AllArgsConstructor
 @Builder
 public class RecipeIngredientDTO {
-    private UUID recipe_ingredientId;
-    private UUID recipe_id;
-    private UUID ingredient_id;
+    private UUID ingredientId;  
+    private UUID recipeId;      
+    private UUID recipeIngredientId;  
     private String ingredient_name;
     private double quantity;
     private String unit;

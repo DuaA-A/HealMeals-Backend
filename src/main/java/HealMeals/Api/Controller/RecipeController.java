@@ -36,12 +36,12 @@
          return ResponseEntity.ok(recipe);
      }
 
-     @PutMapping("/{recipe_id}")
-     public ResponseEntity<RecipeDTO> updateRecipe
-             (@PathVariable UUID recipe_id, @RequestBody RecipeDTO recipeDTO, @RequestParam UUID updatedById){
-         RecipeDTO updatedRecipe = recipeService.updateRecipe(recipe_id, recipeDTO, updatedById);
-         return ResponseEntity.ok(updatedRecipe);
-     }
+    //  @PutMapping("/{recipe_id}")
+    //  public ResponseEntity<RecipeDTO> updateRecipe
+    //          (@PathVariable UUID recipe_id, @RequestBody RecipeDTO recipeDTO, @RequestParam UUID updatedById){
+    //      RecipeDTO updatedRecipe = recipeService.updateRecipe(recipe_id, recipeDTO, updatedById);
+    //      return ResponseEntity.ok(updatedRecipe);
+    //  }
 
      @DeleteMapping("/{recipe_id}")
      public ResponseEntity<String> deleteRecipe(@PathVariable UUID recipe_id){
