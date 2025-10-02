@@ -7,5 +7,5 @@ import java.util.List;
 import java.util.UUID;
 
 public interface RecipeConditionRepository extends JpaRepository<RecipeCondition, UUID> {
-    List<RecipeCondition> findByRecipeId(UUID recipeId);
+    List<RecipeCondition> findByRecipeRecipeId(UUID recipeId);
 }

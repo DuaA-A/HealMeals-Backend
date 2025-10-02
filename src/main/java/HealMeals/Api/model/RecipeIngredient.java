@@ -3,6 +3,7 @@ package HealMeals.Api.model;
 
 import jakarta.persistence.*;
 import lombok.*;
+import lombok.Builder;
 
 import java.util.UUID;
 

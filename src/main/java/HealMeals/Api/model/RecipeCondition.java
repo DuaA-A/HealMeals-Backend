@@ -3,6 +3,7 @@ package HealMeals.Api.model;
 import jakarta.persistence.*;
 import lombok.*;
 import java.util.UUID;
+import lombok.Builder;
 
 @Entity
 @Table(name = "recipe_conditions")

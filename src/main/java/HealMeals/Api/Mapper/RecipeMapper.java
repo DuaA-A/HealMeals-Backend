@@ -1,75 +1,81 @@
- package HealMeals.Api.Mapper;
+package HealMeals.Api.Mapper;
 
- import HealMeals.Api.DTO.RecipeDTO;
- import HealMeals.Api.DTO.RecipeSummaryDto;
- import HealMeals.Api.model.Recipe;
- import HealMeals.Api.model.RecipeIngredient;
- import HealMeals.Api.model.User;
+import HealMeals.Api.DTO.RecipeDTO;
+import HealMeals.Api.DTO.RecipeSummaryDto;
+import HealMeals.Api.model.Recipe;
+import HealMeals.Api.model.RecipeIngredient;
+import HealMeals.Api.model.User;
 
- import java.util.stream.Collectors;
+import java.util.stream.Collectors;
 
- public class RecipeMapper {
-     public static Recipe toEntity(RecipeDTO dto, User updatedBy, User createdBy) {
-         if (dto == null) return null;
+public class RecipeMapper {
 
-         Recipe recipe = Recipe.builder()
-                 .recipeId(dto.getRecipe_id())
-                 .description(dto.getDescription())
-                 .stars(dto.getStars())
-                 .steps(dto.getSteps())
-                 .title(dto.getTitle())
-                 .createdBy(createdBy)
-                 .updatedBy(updatedBy)
-                 .dateAdded(dto.getDateAdded())
-                 .dateUpdated(dto.getDateUpdated())
-                 .prepTime(dto.getPrepTime())
-                 .build();
+    public static Recipe toEntity(RecipeDTO dto, User updatedBy, User createdBy) {
+        if (dto == null) return null;
 
-         if (dto.getRecipeIngredients() != null) {
-             recipe.setRecipeIngredients(
-                     dto.getRecipeIngredients().stream()
-                             .map(riDto -> {
-                                 RecipeIngredient ri = RecipeIngredientMapper.toEntity(riDto, null);
-                                 ri.setRecipe(recipe);
-                                 return ri;
-                             })
-                             .collect(Collectors.toList())
-             );
-         }
+        Recipe recipe = Recipe.builder()
+                .recipeId(dto.getRecipeId())
+                .name(dto.getName())
+                .description(dto.getDescription())
+                .summary(dto.getSummary())
+                .prepTimeMinutes(dto.getPrepTimeMinutes())
+                .createdBy(createdBy)
+                .updatedBy(updatedBy)
+                .dateAdded(dto.getDateAdded())
+                .dateUpdated(dto.getDateUpdated())
+                .build();
 
-         return recipe;
-     }
+        if (dto.getRecipeIngredients() != null) {
+            recipe.setRecipeIngredients(
+                    dto.getRecipeIngredients().stream()
+                            .map(riDto -> {
+                                RecipeIngredient ri = RecipeIngredientMapper.toEntity(riDto, null);
+                                ri.setRecipe(recipe);
+                                return ri;
+                            })
+                            .collect(Collectors.toList())
+            );
+        }
 
+        return recipe;
+    }
 
-     public static RecipeDTO toDTO(Recipe recipe){
-         if (recipe == null) return null;
+    public static RecipeDTO toDTO(Recipe recipe) {
+        if (recipe == null) return null;
 
-         RecipeDTO dto = RecipeDTO.builder()
-                 .recipe_id(recipe.getRecipeId())
-                 .description(recipe.getDescription())
-                 .title(recipe.getTitle())
-                 .stars(recipe.getStars())
-                 .steps(recipe.getSteps())
-                 .createdBy(recipe.getCreatedBy().getUserId()!=null?recipe.getCreatedBy().getUserId():null)
-                 .updatedBy(recipe.getUpdatedBy().getUserId()!=null?recipe.getUpdatedBy().getUserId():null)
-                 .dateAdded(recipe.getDateAdded())
-                 .dateUpdated(recipe.getDateUpdated())
-                 .prepTime(recipe.getPrepTime())
-                 .recipeIngredients(recipe.getRecipeIngredients()!=null
-                         ?recipe.getRecipeIngredients().stream()
-                         .map(RecipeIngredientMapper::toDto)
-                         .collect(Collectors.toList()) : null)
-                 .build();
-         return dto;
-     }
+        return RecipeDTO.builder()
+                .recipeId(recipe.getRecipeId())
+                .name(recipe.getName())
+                .description(recipe.getDescription())
+                .summary(recipe.getSummary())
+                .prepTimeMinutes(recipe.getPrepTimeMinutes())
+                .averageRating(recipe.getAverageRating())
+                .steps(recipe.getSteps() != null
+                        ? recipe.getSteps().stream()
+                            .map(s -> s.getStep()) // map RecipeStep entity → String
+                            .collect(Collectors.toList())
+                        : null)
+                .recipeIngredients(recipe.getRecipeIngredients() != null
+                        ? recipe.getRecipeIngredients().stream()
+                            .map(RecipeIngredientMapper::toDto)
+                            .collect(Collectors.toList())
+                        : null)
+                .dateAdded(recipe.getDateAdded())
+                .dateUpdated(recipe.getDateUpdated())
+                .createdBy(recipe.getCreatedBy() != null ? recipe.getCreatedBy().getUserId() : null)
+                .updatedBy(recipe.getUpdatedBy() != null ? recipe.getUpdatedBy().getUserId() : null)
+                .build();
+    }
 
-     public static RecipeSummaryDto toSummaryDto(Recipe recipe){
-         return new RecipeSummaryDto(
-                 recipe.getRecipeId(),
-                 recipe.getTitle(),
-                 recipe.getDescription(),
-                 recipe.getPrepTime(),
-                 recipe.getStars()
-         );
-     }
- }
+    public static RecipeSummaryDto toSummaryDto(Recipe recipe) {
+        if (recipe == null) return null;
+
+        return RecipeSummaryDto.builder()
+                .recipeId(recipe.getRecipeId())
+                .name(recipe.getName())
+                .description(recipe.getDescription())
+                .prepTimeMinutes(recipe.getPrepTimeMinutes())
+                .averageRating(recipe.getAverageRating())
+                .build();
+    }
+}

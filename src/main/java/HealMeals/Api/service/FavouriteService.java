@@ -59,7 +59,7 @@ public class FavouriteService {
                 .favouriteId(favourite.getFavouriteId())
                 .userId(favourite.getUser().getUserId()) 
                 .recipe(RecipeSummaryDto.builder()
-                        .recipeId(favourite.getRecipe().getId())
+                        .recipeId(favourite.getRecipe().getRecipeId())
                         .name(favourite.getRecipe().getName())
                         .description(favourite.getRecipe().getDescription())
                         .prepTimeMinutes(favourite.getRecipe().getPrepTimeMinutes())

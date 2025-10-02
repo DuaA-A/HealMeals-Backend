@@ -6,7 +6,6 @@ import lombok.*;
 import org.hibernate.annotations.CreationTimestamp;
 import org.hibernate.annotations.UpdateTimestamp;
 
-import java.time.Duration;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
@@ -23,7 +22,7 @@ public class Recipe {
 
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO)
-    private UUID id;
+    private UUID recipeId;
 
     private String name;
 
@@ -31,7 +30,7 @@ public class Recipe {
     private String description;
 
     @Column(length = 300)
-    private String summary; 
+    private String summary;
 
     @OneToMany(mappedBy = "recipe", cascade = CascadeType.ALL, orphanRemoval = true)
     private List<RecipeRating> ratings = new ArrayList<>();
@@ -61,12 +60,12 @@ public class Recipe {
     private User updatedBy;
 
     @OneToMany(mappedBy = "recipe", cascade = CascadeType.ALL, orphanRemoval = true)
-    private List<RecipeIngredient> recipeIngredients;
+    private List<RecipeIngredient> recipeIngredients = new ArrayList<>();
 
     @OneToMany(mappedBy = "recipe", cascade = CascadeType.ALL, orphanRemoval = true)
-    private List<Favourite> favourites;
+    private List<Favourite> favourites = new ArrayList<>();
 
     @OneToMany(mappedBy = "recipe", cascade = CascadeType.ALL, orphanRemoval = true)
+    @Builder.Default
     private List<RecipeStep> steps = new ArrayList<>();
-
 }

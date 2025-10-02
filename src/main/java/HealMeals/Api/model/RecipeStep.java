@@ -8,6 +8,7 @@ import java.util.List;
 import java.util.UUID;
 
 import HealMeals.Api.model.Recipe;
+import lombok.Builder;
 
 @Entity
 @Table(name = "recipe_steps")
@@ -17,6 +18,7 @@ import HealMeals.Api.model.Recipe;
 @AllArgsConstructor
 @Builder
 public class RecipeStep {
+
     @Id
     @GeneratedValue(strategy = GenerationType.UUID)
     private UUID id;
@@ -25,13 +27,11 @@ public class RecipeStep {
     @JoinColumn(name = "recipe_id", nullable = false)
     private Recipe recipe;
 
-    @OneToMany(mappedBy = "recipe", cascade = CascadeType.ALL, orphanRemoval = true)
-    @Builder.Default
-    private List<RecipeStep> steps = new ArrayList<>();
-
     @Column(nullable = false, length = 1000)
     private String step;
 
-    private int stepOrder;
+    @Column(nullable = false, length = 1000)
+    private String instruction;
 
+    private int stepOrder;
 }
