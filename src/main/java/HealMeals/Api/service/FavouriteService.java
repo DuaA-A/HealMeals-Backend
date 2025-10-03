@@ -10,6 +10,7 @@ import HealMeals.Api.model.User;
 import HealMeals.Api.model.Recipe;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.time.LocalDateTime;
 import java.util.List;
@@ -45,6 +46,7 @@ public class FavouriteService {
         return toDto(favourite);
     }
 
+    @Transactional
     public void removeFavourite(UUID userId, UUID recipeId) {
         favouriteRepository.deleteByUser_UserIdAndRecipe_RecipeId(userId, recipeId);
     }

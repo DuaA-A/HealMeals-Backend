@@ -25,38 +25,40 @@ public class SecurityConfig {
     @Bean
     public SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
         http
-            .csrf(csrf -> csrf.disable())
-            .authorizeHttpRequests(auth -> {
-                auth
-                    .requestMatchers(
-                        "/api/auth/**",
-                        "/swagger-ui/**",
-                        "/v3/api-docs/**",
+                .csrf(csrf -> csrf.disable())
+                .authorizeHttpRequests(auth -> {
+                    auth
+                            .requestMatchers(
+                                    "/api/auth/**",
+                                    "/swagger-ui/**",
+                                    "/v3/api-docs/**",
 
-                        "/api/recipes/**",
-                        "/api/ingredients/**",
-                        "/api/users/**",
-                        "/api/profile-conditions/**",
-                        "/api/user-conditions/**",
-                        "/api/reviews/**",
-                        "/api/notification/**",
-                        "/api/donations/**"
-                    ).permitAll()
-                    // .requestMatchers(
-                    //     "/api/users/**",
-                    //     "/api/profile-conditions/**",
-                    //     "/api/user-conditions/**",
-                    //     "/api/reviews/**",
-                    //     "/api/notification/**",
-                    //     "/api/donations/**"
-                    // ).hasRole("USER")
-                    // .requestMatchers(
-                    //     "/api/recipes/**",
-                    //     "/api/ingredients/**"
-                    // ).hasRole("ADMIN")
-                    .anyRequest().authenticated();
-            })
-            .sessionManagement(sm -> sm.sessionCreationPolicy(SessionCreationPolicy.STATELESS));
+                                    "/api/recipes/**",
+                                    "/api/ingredients/**",
+                                    "/api/users/**",
+                                    "/api/profile-conditions/**",
+                                    "/api/user-conditions/**",
+                                    "/api/reviews/**",
+                                    "/api/notification/**",
+                                    "/api/donations/**",
+                                    "/api/favourites/**"
+                            ).permitAll()
+                            // .requestMatchers(
+                            //     "/api/users/**",
+                            //     "/api/profile-conditions/**",
+                            //     "/api/user-conditions/**",
+                            //     "/api/reviews/**",
+                            //     "/api/notification/**",
+                            //     "/api/donations/**"
+                            // ).hasRole("USER")
+                            // .requestMatchers(
+                            //     "/api/recipes/**",
+                            //     "/api/ingredients/**"
+                            // ).hasRole("ADMIN")
+                            .anyRequest().authenticated();
+                })
+                .sessionManagement(sm -> sm.sessionCreationPolicy(SessionCreationPolicy.STATELESS))
+                .cors(cors -> cors.configurationSource(corsConfigurationSource()));
         http.addFilterBefore(jwtAuthenticationFilter, UsernamePasswordAuthenticationFilter.class);
         return http.build();
     }

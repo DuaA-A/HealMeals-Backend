@@ -3,11 +3,10 @@ package HealMeals.Api.Mapper;
 import HealMeals.Api.DTO.RecipeDTO;
 import HealMeals.Api.DTO.RecipeSummaryDto;
 import HealMeals.Api.DTO.RecipeConditionDTO;
-import HealMeals.Api.model.Recipe;
-import HealMeals.Api.model.RecipeIngredient;
-import HealMeals.Api.model.User;
-import HealMeals.Api.model.RecipeCondition;
+import HealMeals.Api.model.*;
 
+import java.util.ArrayList;
+import java.util.List;
 import java.util.stream.Collectors;
 
 public class RecipeMapper {
@@ -37,6 +36,21 @@ public class RecipeMapper {
                             })
                             .collect(Collectors.toList())
             );
+        }
+
+        if (dto.getSteps() != null && !dto.getSteps().isEmpty()) {
+            List<RecipeStep> steps = new ArrayList<>();
+            int stepNumber = 1;
+            for (String instruction : dto.getSteps()) {
+                RecipeStep step = RecipeStep.builder()
+                        .step("")
+                        .instruction(instruction)
+                        .stepOrder(stepNumber++)
+                        .recipe(recipe)
+                        .build();
+                steps.add(step);
+            }
+            recipe.setSteps(steps);
         }
 
         if (dto.getRecipeConditions() != null) {
