@@ -8,7 +8,7 @@
 
 <h2>Project Overview</h2>
 <p>
-  HealMeals is a health-tech platform designed to provide personalized food recipes for individuals with medical dietary restrictions such as Diabetes and Hypertension[cite: 30, 31]. The system tailors recommendations based on health profiles and filters harmful ingredients automatically[cite: 31, 32].
+  HealMeals is a health-tech platform designed to provide personalized food recipes for individuals with medical dietary restrictions such as Diabetes and Hypertension. The system tailors recommendations based on health profiles and filters harmful ingredients automatically.
 </p>
 
 <h2>Technical Role: Backend Team Lead</h2>
@@ -19,9 +19,9 @@
 <h3>Key Contributions:</h3>
 <ul>
   <li><b>System Design & Modeling:</b> Architected the complete ERD and Class Diagrams to ensure a scalable database structure for sensitive medical and dietary data.</li>
-  <li><b>Authentication & RBAC:</b> Engineered a secure multi-role system (Admin and User) with Role-Based Access Control to manage permissions and protect user profiles[cite: 52, 349].</li>
+  <li><b>Authentication & RBAC:</b> Engineered a secure multi-role system (Admin and User) with Role-Based Access Control to manage permissions and protect user profiles.</li>
   <li><b>Live Notification Engine:</b> Integrated Java Mail Sender to provide real-time email alerts for user registration and login events.</li>
-  <li><b>Data Validation:</b> Implemented over 100 functional and technical validations based on SRS requirements to maintain 100% data integrity [cite: 170-248].</li>
+  <li><b>Data Validation:</b> Implemented over 100 functional and technical validations based on SRS requirements to maintain 100% data integrity .</li>
 </ul>
 
 <h2>System Architecture</h2>
@@ -31,9 +31,9 @@
 
 <h3>Core Features Developed:</h3>
 <ul>
-  <li>User Profile Management with specialized medical condition fields[cite: 56, 391].</li>
-  <li>Secure Admin dashboard for recipe and user oversight[cite: 56].</li>
-  <li>Automated validation logic for every data entry point[cite: 249].</li>
+  <li>User Profile Management with specialized medical condition fields.</li>
+  <li>Secure Admin dashboard for recipe and user oversight.</li>
+  <li>Automated validation logic for every data entry point.</li>
 </ul>
 
 <h2>Challenges & Engineering Insights</h2>
@@ -51,4 +51,4 @@
 </ul>
 
 <hr>
-<p align="center">Developed by Duaa Abd-Elati</p>
+<p align="center">Developed by Duaa Abd-Elati & Nada Assad </p>
